@@ -1,8 +1,12 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Revile
+
+Revile is a single-owner blog with MongoDB-backed posts and a server-authenticated writing desk.
 
 ## Getting Started
 
-First, run the development server:
+1. Copy `.env.example` to `.env.local`.
+2. Set `MONGODB_URI` to your MongoDB connection string, choose an `AUTH_SECRET` with a long, random value, and add your `IMAGEKIT_PUBLIC_KEY` and `IMAGEKIT_PRIVATE_KEY` from ImageKit.
+3. Run the development server:
 
 ```bash
 npm run dev
@@ -18,7 +22,11 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+On the first visit to `/sign-in`, create the sole owner account. The account is stored in MongoDB with a bcrypt password hash; later visits can only sign in.
+
+Published posts are visible on `/`. Drafts and all post mutations require the server-verified admin session.
+
+Article and cover images upload directly to ImageKit. The browser receives a short-lived upload signature from the authenticated server; the ImageKit private key remains server-only.
 
 ## Learn More
 
