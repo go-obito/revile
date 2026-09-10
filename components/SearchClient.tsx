@@ -134,6 +134,39 @@ export default function SearchClient({ posts, categories }: SearchClientProps) {
         .site-home .read-link { display: inline-flex; align-items: center; gap: 9px; color: var(--blue); font: 500 11px var(--font-poppins); text-transform: uppercase; letter-spacing: 1px; margin-top: 26px; }
         .site-home .empty-posts { grid-column: 1 / -1; min-height: 220px; display: flex; align-items: center; justify-content: center; color: var(--muted); font: 500 14px var(--font-poppins); border: 1px solid var(--line); background: var(--paper); }
 
+        .site-home .newsletter-hero { max-width: 1240px; margin: 0 auto; padding: 54px 30px 30px; display: grid; grid-template-columns: minmax(440px, 1fr) minmax(380px, 0.92fr); align-items: center; gap: 30px; }
+        .site-home .newsletter-copy { padding: 20px 0; }
+        .site-home .newsletter-copy .issue-tag { display: inline-flex; align-items: center; gap: 8px; color: var(--blue); font: 700 11px var(--font-poppins); text-transform: uppercase; letter-spacing: 1.8px; margin-bottom: 20px; }
+        .site-home .newsletter-copy h1 { margin: 0 0 20px; font: 400 clamp(56px, 7vw, 82px)/1 var(--font-montserrat); color: var(--ink); letter-spacing: -3px; }
+        .site-home .newsletter-copy h1 span { color: var(--blue); }
+        .site-home .newsletter-copy .newsletter-summary { max-width: 540px; color: var(--muted); font: 400 18px/1.7 var(--font-roboto); margin: 0 0 30px; }
+        .site-home .newsletter-form { display: flex; align-items: center; max-width: 500px; min-height: 48px; border: 1px solid var(--line); background: var(--paper); border-radius: 2px; overflow: hidden; }
+        .site-home .newsletter-form input { flex: 1; min-width: 0; height: 48px; border: 0; outline: 0; background: transparent; padding: 0 16px; color: var(--ink); font: 14px var(--font-roboto); }
+        .site-home .newsletter-form input::placeholder { color: var(--muted); }
+        .site-home .newsletter-form button { height: 48px; padding: 0 30px; border: 0; background: var(--blue); color: var(--paper); font: 700 11px var(--font-poppins); text-transform: uppercase; letter-spacing: 1.2px; cursor: pointer; }
+        .site-home .newsletter-visual { min-height: 440px; display: flex; align-items: center; justify-content: center; position: relative; }
+        .site-home .newsletter-visual .image-card { width: min(440px, 100%); min-height: 420px; border-radius: 0; background: linear-gradient(150deg, var(--line), var(--paper)); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 30px 90px rgba(16,26,46,0.12); position: relative; }
+        .site-home .newsletter-visual .image-card::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(var(--blue) 1px, transparent 1px); background-size: 24px 24px; opacity: 0.18; transform: rotate(-8deg); }
+        .site-home .newsletter-visual .image-card::after { content: ""; position: absolute; width: 90%; height: 90%; left: 5%; top: 5%; border-radius: 50%; border: 1px solid var(--blue); opacity: 0.6; transform: rotate(10deg); }
+        .site-home .newsletter-visual .image-card .image-inner { position: relative; z-index: 2; width: 180px; height: 180px; border-radius: 50%; background: var(--blue); color: var(--paper); font: 700 56px/180px var(--font-montserrat); text-align: center; box-shadow: inset 0 0 0 14px var(--paper); }
+        .site-home .newsletter-visual .image-card .image-inner::before, .site-home .newsletter-visual .image-card .image-inner::after { content: ""; position: absolute; width: 16px; height: 120px; background: var(--ink); top: 30px; border-radius: 12px; }
+        .site-home .newsletter-visual .image-card .image-inner::before { left: -40px; transform: rotate(-35deg); }
+        .site-home .newsletter-visual .image-card .image-inner::after { right: -40px; transform: rotate(35deg); }
+        .site-home .latest-news-section { max-width: 1240px; margin: 0 auto; padding: 20px 30px 80px; }
+        .site-home .latest-news-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+        .site-home .latest-news-head h2 { font: 500 30px/1 var(--font-montserrat); color: var(--ink); margin: 0; letter-spacing: -1px; }
+        .site-home .latest-news-head h2 a { color: var(--blue); font: 700 11px var(--font-poppins); text-transform: uppercase; letter-spacing: 1px; }
+        .site-home .latest-news-grid { display: grid; grid-template-columns: repeat(3, minmax(210px, 1fr)); gap: 28px; }
+        .site-home .latest-news-card { background: var(--paper); border: 1px solid var(--line); min-height: 320px; display: flex; flex-direction: column; box-shadow: 0 12px 40px rgba(16,26,46,0.05); }
+        .site-home .latest-news-card-image { height: 180px; background: var(--line); overflow: hidden; border-bottom: 1px solid var(--line); position: relative; }
+        .site-home .latest-news-card-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .site-home .latest-news-card-content { padding: 22px 24px 26px; }
+        .site-home .latest-news-card-content .news-category { color: var(--blue); font: 700 10px var(--font-poppins); letter-spacing: 1.5px; text-transform: uppercase; }
+        .site-home .latest-news-card-content h3 { color: var(--ink); font: 500 24px/1.2 var(--font-montserrat); letter-spacing: -0.7px; margin: 12px 0 10px; }
+        .site-home .latest-news-card-content p { color: var(--muted); font: 14px/1.7 var(--font-roboto); margin: 0 0 8px; }
+        .site-home .latest-news-card-content a { color: var(--blue); font: 700 11px var(--font-poppins); text-transform: uppercase; letter-spacing: 1px; }
+        .site-home .floating-subscribe { position: fixed; right: 24px; bottom: 36px; z-index: 20; background: var(--blue); color: var(--paper); border-radius: 26px; padding: 12px 21px; font: 700 11px var(--font-poppins); text-transform: uppercase; border: 0; box-shadow: 0 16px 36px rgba(25,92,255,0.25); }
+
         .site-home .site-footer { max-width: 1240px; margin: 0 auto; padding: 40px 30px 70px; background: var(--ink); color: var(--paper); border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 24px; font: 500 11px var(--font-poppins); text-transform: uppercase; letter-spacing: 1.4px; }
         .site-home .site-footer .brand { font-size: 28px; color: var(--paper); }
         .site-home .site-footer .brand span { color: var(--paper); }
@@ -222,7 +255,7 @@ export default function SearchClient({ posts, categories }: SearchClientProps) {
                       const metaLabel = chips.map((c) => c.label).join(", ");
                       return (
                         <div className="search-result" key={post.id}>
-                          <Link href={`/#posts`}>
+                          <Link href={`/posts/${post.slug ?? post.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`}>
                             <span>
                               <span className="result-title">{post.title}</span>
                               <span className="result-meta">{metaLabel}</span>
@@ -248,70 +281,49 @@ export default function SearchClient({ posts, categories }: SearchClientProps) {
         </div>
       </header>
 
-      <section className="hero">
-        <div className="hero-copy-wrap">
-          <p className="eyebrow">Field Journal</p>
-          <h1><em>Look closer.</em><br />Think deeper.</h1>
-          <p className="hero-copy">Notes on culture, technology, football and the strange patterns of the human world.</p>
-          <div className="hero-actions">
-            <a className="primary-button" href="#posts">Read the journal <span>→</span></a>
+      <section className="newsletter-hero">
+        <section className="newsletter-copy">
+          <div className="issue-tag">Revile / Newsletter</div>
+          <h1>Become a Better<br />Linux User</h1>
+          <p className="newsletter-summary">With the FOSS Weekly Newsletter, you learn useful Linux tips, discover applications, explore new distros and stay updated with the latest from Linux world.</p>
+          <form className="newsletter-form">
+            <input aria-label="Your email address" placeholder="Your email address" type="email" />
+            <button type="button">Subscribe</button>
+          </form>
+        </section>
+
+        <section className="newsletter-visual" aria-label="Newsletter graphic">
+          <div className="image-card">
+            <div className="image-inner">✦</div>
           </div>
+        </section>
+      </section>
+
+      <section className="latest-news-section">
+        <div className="latest-news-head">
+          <h2>Latest News <a href="#posts">View All →</a></h2>
         </div>
-
-        <aside className="hero-feature">
-          <div className="hero-feature-image">
-            {featured?.coverImage ? <img src={featured.coverImage} alt="" /> : <div className="hero-gradient" />}
-          </div>
-          <div className="hero-feature-meta">
-            <span className="eyebrow">Latest Essay</span>
-            <h2>{featured?.title || "Writing in progress."}</h2>
-            <p>{featured?.excerpt || "The latest field note is being written."}</p>
-          </div>
-        </aside>
-      </section>
-
-      <section className="latest-strip">
-        <span className="section-kicker">The Revile Index</span>
-        <span className="line" />
-        <span className="section-kicker muted">
-          {categories.map((c) => c.name).join(" · ") || "Essays · Field Notes"}
-        </span>
-      </section>
-
-      <section className="public-posts" id="posts">
-        {posts.length === 0 ? (
-          <div className="empty-posts"><p>Writing in progress.</p></div>
-        ) : (
-          posts.map((post) => {
+        <div className="latest-news-grid">
+          {posts.slice(0, 3).map((post) => {
             const chips = resolveCategories(post);
+            const categoryLabel = chips[0]?.label ?? UNCATEGORIZED_LABEL;
+            const foundImage = post.coverImage || "https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=900&q=80";
             return (
-              <article className="story-card" key={post.id}>
-                <div className="story-image">{post.coverImage ? <img src={post.coverImage} alt="" /> : <span className="story-image-grid" />}</div>
-                <div className="story-copy">
-                  <p className="post-meta">
-                    {/* Category chips — each links to its category page via categoryLink() */}
-                    <span>
-                      {chips.map((chip, i) =>
-                        chip.href ? (
-                          <Link key={chip.href} className="cat-chip" href={chip.href}>
-                            {chip.label}{i < chips.length - 1 ? ", " : ""}
-                          </Link>
-                        ) : (
-                          <span key="uncategorized" className="cat-chip-plain">{chip.label}</span>
-                        )
-                      )}
-                    </span>
-                    <span className="post-date">{new Date(post.publishedAt ?? post.updatedAt).toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })}</span>
-                  </p>
-                  <h2>{post.title}</h2>
-                  <p className="post-excerpt">{post.excerpt}</p>
-                  <Link className="read-link" href={`/#posts`}>Read the piece <span>→</span></Link>
+              <article className="latest-news-card" key={post.id}>
+                <div className="latest-news-card-image"><img src={foundImage} alt="" /></div>
+                <div className="latest-news-card-content">
+                  <span className="news-category">{categoryLabel}</span>
+                  <h3>{post.title}</h3>
+                  <p>{post.excerpt}</p>
+                  <Link href={`/posts/${post.slug ?? post.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`}>Read article →</Link>
                 </div>
               </article>
             );
-          })
-        )}
+          })}
+        </div>
       </section>
+
+      <button className="floating-subscribe">Subscribe</button>
 
       <footer className="site-footer">
         <div className="footer-column">
@@ -365,7 +377,7 @@ export default function SearchClient({ posts, categories }: SearchClientProps) {
                   const metaLabel = chips.map((c) => c.label).join(", ");
                   return (
                     <div className="search-result" key={post.id}>
-                      <Link href={`/#posts`}>
+                      <Link href={`/posts/${post.slug ?? post.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`}>
                         <span>
                           <span className="result-title">{post.title}</span>
                           <span className="result-meta">{metaLabel}</span>

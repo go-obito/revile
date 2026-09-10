@@ -107,7 +107,7 @@ export default async function CategoryPage({ params }: PageProps<"/category/[slu
                   </p>
                   <h2>{post.title}</h2>
                   <p className="post-excerpt">{post.excerpt}</p>
-                  <Link className="read-link" href={`/#posts`}>Read the piece <span>→</span></Link>
+                  <Link className="read-link" href={`/posts/${post.slug ?? post.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`}>Read the piece <span>→</span></Link>
                 </div>
               </article>
             );
