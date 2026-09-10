@@ -1,11 +1,14 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Post } from "@/lib/posts";
+import type { Category } from "@/lib/category-link";
+import { categoryLink, UNCATEGORIZED_LABEL } from "@/lib/category-link";
 
 type SearchClientProps = {
   posts: Post[];
+  categories: Category[];
 };
 
 type RankedPost = {
@@ -13,13 +16,28 @@ type RankedPost = {
   score: number;
 };
 
-export default function SearchClient({ posts }: SearchClientProps) {
+export default function SearchClient({ posts, categories }: SearchClientProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Post[]>([]);
   const [loading, setLoading] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [desktopOpen, setDesktopOpen] = useState(false);
   const mobileInputRef = useRef<HTMLInputElement | null>(null);
+
+  /** Build a lookup map so post chips resolve O(1) instead of O(n) per post. */
+  const categoryMap = useMemo(
+    () => new Map(categories.map((c) => [c.id, c])),
+    [categories]
+  );
+
+  /** Resolve a post's categoryIds to display text (or fallback). */
+  function resolveCategories(post: Post): { label: string; href?: string }[] {
+    const resolved = post.categoryIds
+      .map((id) => categoryMap.get(id))
+      .filter((c): c is Category => Boolean(c));
+    if (resolved.length === 0) return [{ label: UNCATEGORIZED_LABEL }];
+    return resolved.map((c) => ({ ...categoryLink(c) }));
+  }
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -106,8 +124,11 @@ export default function SearchClient({ posts }: SearchClientProps) {
         .site-home .story-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .site-home .story-image-grid { width: 100%; height: 100%; display: block; background: repeating-linear-gradient(45deg, var(--line), var(--line) 1px, transparent 1px, transparent 8px), var(--paper); }
         .site-home .story-copy { padding: 30px 32px 34px; flex: 1; }
-        .site-home .post-meta { display: flex; align-items: center; gap: 12px; color: var(--blue); font: 500 10px var(--font-poppins); letter-spacing: 1.7px; text-transform: uppercase; margin: 0 0 16px; }
+        .site-home .post-meta { display: flex; align-items: center; gap: 12px; font: 500 10px var(--font-poppins); letter-spacing: 1.7px; text-transform: uppercase; margin: 0 0 16px; }
         .site-home .post-date { color: var(--muted); }
+        .site-home .cat-chip { color: var(--blue); transition: opacity 180ms ease; }
+        .site-home .cat-chip:hover { opacity: 0.75; }
+        .site-home .cat-chip-plain { color: var(--muted); }
         .site-home .story-copy h2 { font: 500 34px/1.08 var(--font-montserrat); color: var(--ink); letter-spacing: -1.4px; margin: 0 0 14px; }
         .site-home .post-excerpt { color: var(--muted); font-size: 14px; line-height: 1.6; margin: 0; }
         .site-home .read-link { display: inline-flex; align-items: center; gap: 9px; color: var(--blue); font: 500 11px var(--font-poppins); text-transform: uppercase; letter-spacing: 1px; margin-top: 26px; }
@@ -171,11 +192,12 @@ export default function SearchClient({ posts }: SearchClientProps) {
       <header className="site-header">
         <a className="brand" href="/">revile<span>.</span></a>
 
+        {/* Nav links are derived from the categories array — no string literals */}
         <nav className="nav desktop-nav">
-          <a href="#">Culture</a>
-          <a href="#">Technology</a>
-          <a href="#">Football</a>
-          <a href="#">Thinking</a>
+          {categories.map((cat) => {
+            const { href, label } = categoryLink(cat);
+            return <Link key={cat.id} href={href}>{label}</Link>;
+          })}
         </nav>
 
         <div className="header-actions">
@@ -195,17 +217,21 @@ export default function SearchClient({ posts }: SearchClientProps) {
                   <div className="no-results">No posts found</div>
                 ) : (
                   <div className="search-result-list">
-                    {results.map((post) => (
-                      <div className="search-result" key={post.id}>
-                        <Link href={`/#posts`}>
-                          <span>
-                            <span className="result-title">{post.title}</span>
-                            <span className="result-meta">{post.tags || "Essay"}</span>
-                          </span>
-                          <span className="result-arrow">→</span>
-                        </Link>
-                      </div>
-                    ))}
+                    {results.map((post) => {
+                      const chips = resolveCategories(post);
+                      const metaLabel = chips.map((c) => c.label).join(", ");
+                      return (
+                        <div className="search-result" key={post.id}>
+                          <Link href={`/#posts`}>
+                            <span>
+                              <span className="result-title">{post.title}</span>
+                              <span className="result-meta">{metaLabel}</span>
+                            </span>
+                            <span className="result-arrow">→</span>
+                          </Link>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -247,27 +273,43 @@ export default function SearchClient({ posts }: SearchClientProps) {
       <section className="latest-strip">
         <span className="section-kicker">The Revile Index</span>
         <span className="line" />
-        <span className="section-kicker muted">Culture · Technology · Football</span>
+        <span className="section-kicker muted">
+          {categories.map((c) => c.name).join(" · ") || "Essays · Field Notes"}
+        </span>
       </section>
 
       <section className="public-posts" id="posts">
         {posts.length === 0 ? (
           <div className="empty-posts"><p>Writing in progress.</p></div>
         ) : (
-          posts.map((post) => (
-            <article className="story-card" key={post.id}>
-              <div className="story-image">{post.coverImage ? <img src={post.coverImage} alt="" /> : <span className="story-image-grid" />}</div>
-              <div className="story-copy">
-                <p className="post-meta">
-                  <span>{post.tags || "Essay"}</span>
-                  <span className="post-date">{new Date(post.publishedAt ?? post.updatedAt).toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })}</span>
-                </p>
-                <h2>{post.title}</h2>
-                <p className="post-excerpt">{post.excerpt}</p>
-                <Link className="read-link" href={`/#posts`}>Read the piece <span>→</span></Link>
-              </div>
-            </article>
-          ))
+          posts.map((post) => {
+            const chips = resolveCategories(post);
+            return (
+              <article className="story-card" key={post.id}>
+                <div className="story-image">{post.coverImage ? <img src={post.coverImage} alt="" /> : <span className="story-image-grid" />}</div>
+                <div className="story-copy">
+                  <p className="post-meta">
+                    {/* Category chips — each links to its category page via categoryLink() */}
+                    <span>
+                      {chips.map((chip, i) =>
+                        chip.href ? (
+                          <Link key={chip.href} className="cat-chip" href={chip.href}>
+                            {chip.label}{i < chips.length - 1 ? ", " : ""}
+                          </Link>
+                        ) : (
+                          <span key="uncategorized" className="cat-chip-plain">{chip.label}</span>
+                        )
+                      )}
+                    </span>
+                    <span className="post-date">{new Date(post.publishedAt ?? post.updatedAt).toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })}</span>
+                  </p>
+                  <h2>{post.title}</h2>
+                  <p className="post-excerpt">{post.excerpt}</p>
+                  <Link className="read-link" href={`/#posts`}>Read the piece <span>→</span></Link>
+                </div>
+              </article>
+            );
+          })
         )}
       </section>
 
@@ -277,32 +319,22 @@ export default function SearchClient({ posts }: SearchClientProps) {
           <span className="site-footer-copy">Field note archive</span>
           <div className="footer-socials">
             <a className="footer-social" href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram">
-              <svg viewBox="0 0 24 24">
-                <rect x="3" y="3" width="18" height="18" rx="4" />
-                <circle cx="12" cy="12" r="4" />
-                <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none" />
-              </svg>
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none" /></svg>
             </a>
             <a className="footer-social" href="https://x.com" target="_blank" rel="noreferrer" aria-label="X">
-              <svg viewBox="0 0 24 24">
-                <path d="M4 4l16 16M20 4L4 20" />
-              </svg>
+              <svg viewBox="0 0 24 24"><path d="M4 4l16 16M20 4L4 20" /></svg>
             </a>
             <a className="footer-social" href="https://youtube.com" target="_blank" rel="noreferrer" aria-label="YouTube">
-              <svg viewBox="0 0 24 24">
-                <path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" />
-                <path d="m10 9 5 3-5 3z" fill="currentColor" stroke="none" />
-              </svg>
+              <svg viewBox="0 0 24 24"><path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" /><path d="m10 9 5 3-5 3z" fill="currentColor" stroke="none" /></svg>
             </a>
           </div>
         </div>
+        {/* Footer nav — derived from categories, no hardcoded labels */}
         <nav className="site-footer-links">
-          <a href="#">Culture</a>
-          <a href="#">Technology</a>
-          <a href="#">Football</a>
-          <a href="#">Thinking</a>
-          <a href="#">Archives</a>
-          <a href="#">Subscribe</a>
+          {categories.map((cat) => {
+            const { href, label } = categoryLink(cat);
+            return <Link key={cat.id} href={href}>{label}</Link>;
+          })}
         </nav>
       </footer>
 
@@ -328,17 +360,21 @@ export default function SearchClient({ posts }: SearchClientProps) {
               ) : results.length === 0 ? (
                 <div className="no-results">No posts found</div>
               ) : (
-                results.map((post) => (
-                  <div className="search-result" key={post.id}>
-                    <Link href={`/#posts`}>
-                      <span>
-                        <span className="result-title">{post.title}</span>
-                        <span className="result-meta">{post.tags || "Essay"}</span>
-                      </span>
-                      <span className="result-arrow">→</span>
-                    </Link>
-                  </div>
-                ))
+                results.map((post) => {
+                  const chips = resolveCategories(post);
+                  const metaLabel = chips.map((c) => c.label).join(", ");
+                  return (
+                    <div className="search-result" key={post.id}>
+                      <Link href={`/#posts`}>
+                        <span>
+                          <span className="result-title">{post.title}</span>
+                          <span className="result-meta">{metaLabel}</span>
+                        </span>
+                        <span className="result-arrow">→</span>
+                      </Link>
+                    </div>
+                  );
+                })
               )}
             </div>
           </div>
