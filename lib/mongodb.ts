@@ -1,5 +1,8 @@
 import "server-only";
 import { Db, MongoClient } from "mongodb";
+import { loadEnv } from "@/lib/env";
+
+loadEnv();
 
 const databaseName = process.env.MONGODB_DB || "revile";
 const globalForMongo = globalThis as typeof globalThis & { mongoClient?: Promise<MongoClient> };

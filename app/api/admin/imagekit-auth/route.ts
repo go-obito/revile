@@ -1,5 +1,8 @@
 import { createHmac, randomUUID } from "node:crypto";
 import { hasSession } from "@/lib/auth";
+import { loadEnv } from "@/lib/env";
+
+loadEnv();
 
 export async function GET() {
   if (!(await hasSession())) return Response.json({ error: "Unauthorized" }, { status: 401 });

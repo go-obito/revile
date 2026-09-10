@@ -1,6 +1,9 @@
 import "server-only";
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
+import { loadEnv } from "@/lib/env";
+
+loadEnv();
 
 const cookieName = "revile_session";
 const key = () => {
